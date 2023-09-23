@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bottomed Out</title>
+
+    <link rel="shortcut icon" href="/static/images/favicon/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body class="bg-black p-0">
+    <div class="container">
+        <div class="d-flex flex-column justify-content-center align-items-center" style="min-height: 100vh;">
+            <div class="row w-100">
+                <div class="col-12 mb-3">
+                    <div>
+                        <input type="text" class="form-control" id="text-input">
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="p-2 text-bg-dark fs-3 rounded" id="response">
+                        Response
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <textarea class="form-control fs-3 text-bg-dark h-100" id="debug"></textarea>
+                </div>
+                <div class="col-12">
+                    <div class="alert alert-success" role="alert" id="match">
+                        A simple success alert—check it out!
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    ENDPOINTS = {
+        'BOTTOMIZE': '/api/bottomize',
+    }
+
+    //on enter in text-input
+    $('#text-input').on('keyup', function (e) {
+        if (e.key === 'Enter' || e.keyCode === 13) {
+            bottomize(this.value);
+        }
+    });
+
+    function bottomize(text) {
+        $.ajax({
+            url: ENDPOINTS.BOTTOMIZE,
+            type: 'POST',
+            data: {
+                'text': text
+            },
+            dataType: 'json',
+            success: function (response) {
+                $('#response').html(response.data);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    //on debug change if matches response set alert
+    $('#debug').on('change', function (e) {
+        //if correct set to success otherwise danger
+        //remove alert-success and alert-danger
+        $('#match').removeClass('alert-success');
+        $('#match').removeClass('alert-danger');
+
+        if(this.value == $('#response').html()){
+            $('#match').addClass('alert-success');
+            $('#match').html('Correct!');
+        }else{
+            $('#match').addClass('alert-danger');
+            $('#match').html('Incorrect!');
+        }
+    });
+</script>
+
+</html>
